@@ -1,4 +1,4 @@
-#import urllib.request
+	#import urllib.request
 import json
 import requests 
 
@@ -24,9 +24,9 @@ class JenkinsClient:
 	
 	def __init__(self, jenkins_url):
 		self.built = 0
-		self.failures = 0
-		self.test_failures = 0		
-		self.building = 0
+		self.test_failures = 0	
+		self.build_failures = 0	
+		self.building_total = 0
 		self.building_test_failures = 0
 		self.building_build_failures = 0
 		self.jenkins_url = jenkins_url
@@ -38,7 +38,9 @@ class JenkinsClient:
 								
 
 	def refresh(self):
-		r = requests.get(self.jenkins_url + 'api/json')
+		url = self.jenkins_url + 'api/json'
+		print('HTTP GET: ' + url)
+		r = requests.get(url)
 		data = r.json()
 		#print data['jobs']
 		# Create a list of build statuses (colors)
@@ -46,13 +48,13 @@ class JenkinsClient:
 		for job in data['jobs']:
 			statuses.append(job['color'])
 		# Current completed job statuses
-		self.building = 0
+		self.building_total = 0
 		for status in statuses:
 			if self.ANIME in status.lower():
-				self.building = self.building + 1
+				self.building_total = self.building_total + 1
 		self.built = statuses.count(self.BLUE)
 		self.test_failures = statuses.count(self.YELLOW)
-		self.failures = statuses.count(self.RED)		
+		self.build_failures = statuses.count(self.RED)	
 		self.building_test_failures = statuses.count(self.YELLOW_ANIME)
 		self.building_build_failures = statuses.count(self.RED_ANIME)
 		

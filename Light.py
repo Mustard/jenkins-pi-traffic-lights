@@ -1,4 +1,4 @@
-class Lights:	
+class Light:	
 	"""
 	Lights - the pins each light is attached to
 
