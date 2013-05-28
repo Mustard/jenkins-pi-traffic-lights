@@ -1,10 +1,12 @@
 import RPi.GPIO as GPIO
 import time
-from Lights import Lights
+from Light import Light
 
 class TrafficLights:
 
 	def __init__(self):
+		#GPIO.setmode(GPIO.BOARD)
+		GPIO.setmode(GPIO.BCM)
 		self.setup_lights()
 		self.reset_lights()
 
@@ -28,13 +30,13 @@ class TrafficLights:
 		"""
 		Turns a light on
 		"""
-		GPIO.output(light, False)
+		GPIO.output(light, GPIO.HIGH)
 
 	def turn_off_light(self, light):
 		"""
 		Turns a light off
 		"""
-		GPIO.output(light, True)
+		GPIO.output(light, GPIO.LOW)
 
 	def turn_on_light_for_period(self, light, seconds):
 		"""
@@ -53,32 +55,48 @@ class TrafficLights:
 		self.turn_on_light_for_period(Light.RED, 1)
 		self.turn_on_light_for_period(Light.ORANGE, 1)
 		self.turn_on_light_for_period(Light.GREEN, 1)
-		self.turn_on_light_for_period(Light.ORANGE, 1)
-		self.turn_on_light_for_period(Light.GREEN, 1)
 		self.reset_lights()
 		
-	def go(self):
+	def display(self):
 		"""
 		Cycle as traffic lights
 		"""
 		self.reset_lights()
-		self.turn_on_light(self.lights.Red)
-		time.sleep(2)
-		self.turn_on_light(self.lights.Amber)
-		time.sleep(2)
-		self.turn_off_light(self.lights.Red)
-		self.turn_off_light(self.lights.Amber)
-		self.turn_on_light(self.lights.Green)
-		time.sleep(10)
-		self.turn_on_light(self.lights.Amber)
-		self.turn_off_light(self.lights.Green)
-		time.sleep(2)
-		self.turn_on_light(self.lights.Red)
-		self.turn_off_light(self.lights.Amber)
+		self.turn_on_light(Light.RED)
+		time.sleep(1)
+		self.turn_on_light(Light.ORANGE)
+		time.sleep(1)
+		self.turn_on_light(Light.GREEN)
+		time.sleep(1)
+		self.turn_off_light(Light.RED)
+		self.turn_off_light(Light.ORANGE)
+		self.turn_off_light(Light.GREEN)
+		time.sleep(1)
+		self.turn_on_light(Light.GREEN)
+		time.sleep(1)
+		self.turn_on_light(Light.ORANGE)
+		time.sleep(1)
+		self.turn_on_light(Light.RED)
+		time.sleep(1)
+		self.reset_lights()
+
+	def display_status(self, solid, flashing=[], sleep_time=6):
+		self.reset_lights()
+		for light in solid:
+			self.turn_on_light(light)
+		for i in range(sleep_time):
+			if i % 2 != 0:
+				for flashing_light in flashing:
+					self.turn_on_light(flashing_light)
+			else:
+				for flashing_light in flashing:
+					self.turn_off_light(flashing_light)
+			time.sleep(1)		 
+		
 
 	def blink(self, light, blink_delay, no_of_blinks):
 		"""
-		Blinks a light 15 times
+		Flash a light the given number of times 
 		"""
 		self.reset_lights()
 		for counter in range(0, no_of_blinks):

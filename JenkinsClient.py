@@ -32,14 +32,16 @@ class JenkinsClient:
 		self.jenkins_url = jenkins_url
 
 	def __str__(self):
-		# TODO 
-		return 'Built: ' + self.built
-		#'Failures: ' + self.failures
-								
+		return \
+		'Built ------------------- ' + str(self.built) + "\n" + \
+		'Building Total ---------- ' + str(self.building_total) + "\n" \
+		'Building Test Failures -- ' + str(self.building_test_failures) + "\n" \
+		'Building Build Failures - ' + str(self.building_build_failures) + "\n" \
+		'Test Failures ----------- ' + str(self.test_failures) + "\n" \
+		'Build Failures ---------- ' + str(self.build_failures)					
 
 	def refresh(self):
 		url = self.jenkins_url + 'api/json'
-		print('HTTP GET: ' + url)
 		r = requests.get(url)
 		data = r.json()
 		#print data['jobs']
